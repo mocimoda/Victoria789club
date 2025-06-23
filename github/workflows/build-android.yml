@@ -31,3 +31,19 @@ jobs:
       with:
         name: victoria789-app
         path: app/build/outputs/apk/release/*.apk
+        - name: Sign APK
+      run: |
+        jarsigner -verbose \
+          -keystore ${{ secrets.KEYSTORE_FILE }} \
+          -storepass ${{ secrets.KEYSTORE_PASSWORD }} \
+          -keypass ${{ secrets.KEY_PASSWORD }} \
+          app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.KEY_ALIAS }}
+
+    - name: Rename Signed APK
+      run: mv app/build/outputs/apk/release/app-release-unsigned.apk victoria789club.apk
+
+    - name: Upload Signed APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: victoria789club-signed
+        path: victoria789club.apk
